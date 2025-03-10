@@ -14,7 +14,7 @@ export default class Project {
         this.createdAt = new Date();
     }
 
-    id() {
+    get id() {
         return this._id;
     }
 

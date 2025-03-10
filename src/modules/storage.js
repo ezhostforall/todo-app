@@ -1,4 +1,5 @@
 import Project from './project';
+import Task from './task.js';
 
 export default class Storage {
     static saveProjects(projects) {
@@ -6,8 +7,11 @@ export default class Storage {
     }
 
     static loadProjects() {
-        const projects = JSON.parse(localStorage.getItem('projects'));
-        return projects ? projects.map(project => {
+        const projects = JSON.parse(localStorage.getItem('projects')) || [];
+        if (!Array.isArray(projects)) {
+            return [];
+        }
+        return projects.map(project => {
             const tasks = project.tasks.map(task => new Task(
                 task.project,
                 task.title,
@@ -18,7 +22,7 @@ export default class Storage {
                 task.checklist
             ));
             return new Project(project._id, project.name, project.description, tasks);
-        }) : [];
+        });
     }
 
     static deleteProject(projectIndex) {

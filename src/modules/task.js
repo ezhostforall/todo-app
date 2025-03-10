@@ -22,7 +22,7 @@ export default class Task {
         this.completed = false;
     }
 
-    id() {
+    get id() {
         return this._id;
     }
 
