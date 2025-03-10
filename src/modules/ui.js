@@ -104,6 +104,15 @@ export default class UI {
             taskStatus.textContent = task.status;
             taskElement.appendChild(taskStatus);
 
+            const checklist = document.createElement('ul');
+            checklist.className = 'task-checklist';
+            task.checklist.forEach(item => {
+                const checklistItem = document.createElement('li');
+                checklistItem.className = 'checklist-item';
+                checklistItem.textContent = item;
+                checklist.appendChild(checklistItem);
+            });
+
             const taskCompleted = document.createElement('li');
             taskCompleted.className = 'task-completed';
             taskCompleted.textContent = task.completed;

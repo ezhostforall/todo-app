@@ -33,15 +33,28 @@ export default class Events {
             const description = document.querySelector('#new-task-description').value;
             const status = document.querySelector('#new-task-status').value;
             const notes = [document.querySelector('#new-task-notes').value];
-            const checklist = [document.querySelector('#new-checklist-items').value] || [];
+            
+            //Needs attention - array not added to task
+            const checklist = document.querySelector('#new-checklist-items').children || [];
+            const checklistArray = Array.from(checklist).map(item => item.textContent);
             const completed = false;
 
             if (title && dueDate) {
-                const task = new Task(activeProject.name, title, description, dueDate, priority, status, notes, checklist, completed);
+                
+                const task = new Task(activeProject.name, title, description, dueDate, priority, status, notes, checklistArray, completed);
                 activeProject.addTask(task);
                 Storage.saveProjects(projects);
                 UI.displayTasks(activeProject);
             }
+        });
+
+        document.querySelector('#add-checklist-item').addEventListener('click', () => {
+            const newChecklistItem = document.querySelector('#new-checklist-item').value;    
+            const checklistItem = document.createElement('p');
+            //needs attention array not added to task
+            checklistItem.textContent = newChecklistItem;
+            document.querySelector('#new-checklist-items').appendChild(checklistItem);
+            console.log(document.querySelector('#new-checklist-items').children);
         });
 
         document.querySelector('#new-task-btn').addEventListener('click', (event) => {
