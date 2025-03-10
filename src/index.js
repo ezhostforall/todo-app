@@ -1,2 +1,9 @@
-const app = document.querySelector('#app');
-app.innerHTML = '<h1>Hello World</h1>';
+import Project from './modules/project.js';
+import Storage from './modules/storage.js';
+
+let projects = Storage.loadProjects();
+    
+if (projects.length === 0) {
+    projects.push(new Project("Default Project"));
+}
+
