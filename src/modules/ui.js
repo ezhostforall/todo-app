@@ -59,6 +59,7 @@ export default class UI {
                 console.log(projectIndex);
                 Storage.deleteProject(projectIndex);
                 UI.displayProjects(Storage.loadProjects());
+                UI.addDeleteProjectEvents();
             })
         })
     }
@@ -71,7 +72,7 @@ export default class UI {
         
         taskList.innerHTML = '';
         title.dataset.projectId = project._id;
-        title.textContent = project.name; 
+        title.textContent = `Active Project: ${project.name}`; 
         
 
         tasks.forEach(task => {
@@ -104,14 +105,35 @@ export default class UI {
             taskStatus.textContent = task.status;
             taskElement.appendChild(taskStatus);
 
+            const notes = document.createElement('ul');
+            notes.className = 'task-notes';
+            task.notes.forEach(note => {
+                const noteElement = document.createElement('li');
+                noteElement.className = 'note-item';
+                noteElement.textContent = note;
+                notes.appendChild(noteElement);
+            });
+            taskElement.appendChild(notes);
+
             const checklist = document.createElement('ul');
             checklist.className = 'task-checklist';
             task.checklist.forEach(item => {
                 const checklistItem = document.createElement('li');
                 checklistItem.className = 'checklist-item';
-                checklistItem.textContent = item;
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = item.checked;
+                
+                const label = document.createElement('span');
+                label.textContent = item.title;
+                
+                checklistItem.appendChild(checkbox);
+                checklistItem.appendChild(label);
+                
                 checklist.appendChild(checklistItem);
             });
+            taskElement.appendChild(checklist);
 
             const taskCompleted = document.createElement('li');
             taskCompleted.className = 'task-completed';
@@ -128,19 +150,64 @@ export default class UI {
         })
 
         UI.addDeleteTaskEvents(project);
+        UI.addChecklistEvents(project);
 
     }
 
+
+    //TODO: Fix event listener - when deleting a task when there are multiple projects, the tasks for all projects are deleted
     static addDeleteTaskEvents(project) {
-        const deleteTaskBtns = document.querySelectorAll('.delete-task-btn');
-        deleteTaskBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
+        const taskList = document.querySelector('#task-list');
+        taskList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-task-btn')) {
                 const taskId = e.target.dataset.id;
                 project.removeTask(taskId);
-                Storage.saveProjects(project);
+                let projects = Storage.loadProjects();
+                const projectIndex = projects.findIndex(p => p._id === project._id);
+                if (projectIndex !== -1) {
+                    projects[projectIndex] = project;
+                }
+                Storage.saveProjects(projects);
                 UI.displayTasks(project);
-            })
-        })
+            }
+        });
+    }
+
+    static addChecklistEvents(project) {
+        const checklistCheckboxes = document.querySelectorAll('.task-checklist input[type="checkbox"]');
+        checklistCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                // Find the task ID from the parent task element
+                const taskElement = e.target.closest('.task-item');
+                const taskId = taskElement.dataset.id;
+                
+                // Find the checklist item index
+                const checklistItem = e.target.closest('.checklist-item');
+                const checklistIndex = Array.from(checklistItem.parentElement.children).indexOf(checklistItem);
+                
+                // Get the task and update the checklist item's checked property
+                const task = project.tasks.find(t => t.id === taskId);
+                if (task && task.checklist[checklistIndex]) {
+                    task.checklist[checklistIndex].checked = e.target.checked;
+                    
+                    // Load all projects
+                    let projects = Storage.loadProjects();
+                    
+                    // Find the index of the current project
+                    const projectIndex = projects.findIndex(p => p._id === project._id);
+                    
+                    // Update the project in the projects array
+                    if (projectIndex !== -1) {
+                        projects[projectIndex] = project;
+                    } else {
+                        projects.push(project);
+                    }
+                    
+                    // Save all projects
+                    Storage.saveProjects(projects);
+                }
+            });
+        });
     }
 
 }

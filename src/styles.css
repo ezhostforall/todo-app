@@ -71,17 +71,61 @@ main {
     margin-top: 1rem;
 }
 
+#task-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+
 .project-item, .task-item {
-    padding: 0.5rem;
+    
     border: 1px solid #dee2e6;
     border-radius: 0.25rem;
     margin-bottom: 0.5rem;
     background-color: white;
 }
 
+.project-item {
+    padding: 0.5rem;
+}
+
+.task-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .project-title, .task-title {
     font-weight: bold;
 }
+
+.task-title {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 0;
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.task-title, .task-description, .task-due-date, .task-priority, .task-status, .task-completed, .task-checklist {
+    width: 100%;
+    text-align: center;
+    
+}
+
+.task-description, .task-due-date, .task-priority, .task-status, .task-completed, .task-checklist {
+    
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.delete-task-btn {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
 
 .project-description, .task-description, .task-due-date, .task-priority, .task-status, .task-completed {
     margin-top: 0.25rem;

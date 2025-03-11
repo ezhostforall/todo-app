@@ -7,8 +7,9 @@ export default class Task {
         description = 'No description provided', 
         dueDate = new Date(), 
         priority = 'low', 
-        notes = [{ title: 'Default note title', content: 'Default note content' }],
-        checklist = [{ title: 'Default checklist title', checked: false }],
+        status,
+        notes = ['No notes provided'],
+        checklist = [],
     ) {
         this._id = `task-${Date.now().toString()}`;
         this.project = project;
@@ -16,7 +17,7 @@ export default class Task {
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
-        this.status = 'new';
+        this.status = status || 'new';
         this.notes = notes;
         this.checklist = checklist;
         this.completed = false;

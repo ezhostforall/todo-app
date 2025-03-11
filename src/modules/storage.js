@@ -18,8 +18,9 @@ export default class Storage {
                 task.description,
                 new Date(task.dueDate),
                 task.priority,
+                task.status,
                 task.notes,
-                task.checklist
+                task.checklist  
             ));
             return new Project(project._id, project.name, project.description, tasks);
         });

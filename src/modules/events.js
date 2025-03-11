@@ -17,7 +17,7 @@ export default class Events {
                 projects.push(project);
                 Storage.saveProjects(projects);
                 UI.displayProjects(projects);
-            }
+            } 
         });
 
         document.querySelector('#add-new-task-form-button').addEventListener('click', (event) => {
@@ -25,7 +25,7 @@ export default class Events {
             const activeProjectId = document.querySelector("#current-project-title").dataset.projectId;
             const activeProject = projects.find(project => project._id === activeProjectId);
             
-
+            
             const id = `task-${Date.now().toString()}`;
             const title = document.querySelector('#new-task-name').value;
             const dueDate = document.querySelector('#new-task-due-date').value;
@@ -34,14 +34,24 @@ export default class Events {
             const status = document.querySelector('#new-task-status').value;
             const notes = [document.querySelector('#new-task-notes').value];
             
-            //Needs attention - adds one item to array
-            const checklist = document.querySelector('#new-checklist-items').children || [];
-            const checklistArray = Array.from(checklist).map(item => item.textContent.trim());
+            const checklist = document.querySelector('#new-checklist-items').children;
+            const checklistArray = Array.from(checklist).map(item => {
+                const checklistItem = {
+                    title: item.textContent.trim(),
+                    checked: false
+                };
+                return checklistItem;
+            });
+
             const completed = false;
 
             if (title && dueDate) {
+                if (!activeProject) {
+                    alert("Please select a project before adding a task.");
+                    return;
+                }
                 console.log(checklistArray);
-                const task = new Task(activeProject.name, title, description, dueDate, priority, status, notes, checklistArray, completed);
+                const task = new Task(activeProject.name, title, description, dueDate, priority, status, notes, checklistArray);
                 activeProject.addTask(task);
                 Storage.saveProjects(projects);
                 UI.displayTasks(activeProject);
@@ -52,7 +62,6 @@ export default class Events {
         document.querySelector('#add-checklist-item').addEventListener('click', () => {
             const newChecklistItem = document.querySelector('#new-checklist-item').value;    
             const checklistItem = document.createElement('p');
-            //needs attention array not added to task
             checklistItem.textContent = newChecklistItem;
             document.querySelector('#new-checklist-items').appendChild(checklistItem);
             console.log(document.querySelector('#new-checklist-items').children);
@@ -63,14 +72,12 @@ export default class Events {
             const taskForm = document.querySelector('#add-new-task-form-wrapper');
             const activeProject = document.querySelector('#current-project-title').textContent;
             taskForm.classList.toggle('hidden');
-            //TODO - Need to fix this. Not being updated correctly
-            setTimeout(() => {
-                const formTitle = activeProject !== "No Active Project" ? document.querySelector('#active-project-form-header') : activeProject;
-                console.log(formTitle);
-                if (activeProject !== "No Active Project") formTitle.textContent = `Add a new task to ${activeProject}`;
-                console.log(activeProject);
-                console.log(formTitle.textContent);
-            }, 0);
+            const formTitle = activeProject !== "No Active Project" ? document.querySelector('#active-project-form-header') : activeProject;
+            console.log(formTitle);
+            if (activeProject !== "No Active Project") formTitle.textContent = `Add a new task to ${activeProject}`;
+            console.log(activeProject);
+            console.log(formTitle.textContent);
+            
         });
 
         document.querySelector('#new-project-btn').addEventListener('click', (event) => {
