@@ -34,17 +34,18 @@ export default class Events {
             const status = document.querySelector('#new-task-status').value;
             const notes = [document.querySelector('#new-task-notes').value];
             
-            //Needs attention - array not added to task
+            //Needs attention - adds one item to array
             const checklist = document.querySelector('#new-checklist-items').children || [];
-            const checklistArray = Array.from(checklist).map(item => item.textContent);
+            const checklistArray = Array.from(checklist).map(item => item.textContent.trim());
             const completed = false;
 
             if (title && dueDate) {
-                
+                console.log(checklistArray);
                 const task = new Task(activeProject.name, title, description, dueDate, priority, status, notes, checklistArray, completed);
                 activeProject.addTask(task);
                 Storage.saveProjects(projects);
                 UI.displayTasks(activeProject);
+                console.log(task);
             }
         });
 
