@@ -59,8 +59,16 @@ main {
     margin-bottom: 1rem;
 }
 
-#new-project-btn, #new-task-btn, #add-new-project-form-button, #add-new-task-form-button, #add-checklist-item {
+#new-project-btn, #new-task-btn, #add-new-project-form-button, #add-new-task-form-button, #add-checklist-item, #save-task-form-button {
     background-color: #007bff;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+#cancel-task-form-button {
+    background-color: #dc3545;
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -131,7 +139,7 @@ main {
     margin-top: 0.25rem;
 }
 
-.delete-project-btn, .delete-task-btn, .display-tasks-btn {
+.delete-project-btn, .delete-task-btn, .display-tasks-btn, .edit-project-btn, .edit-task-btn {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     margin-top: 0.5rem;
@@ -148,7 +156,13 @@ main {
     border: 1px solid #007bff;
 }
 
-#add-project-form-wrapper, #add-new-task-form-wrapper {
+.edit-project-btn, .edit-task-btn {
+    background-color: #007bff;
+    color: white;
+    margin-left: 0.5rem;
+}
+
+#add-project-form-wrapper, #add-new-task-form-wrapper, #edit-task-form-wrapper {
     padding: 1rem;
     border-left: 1px solid #dee2e6;
     background-color: #f1f3f5;

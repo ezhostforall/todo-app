@@ -34,9 +34,9 @@
             <form id="add-new-task-form">
                 <h3 id="active-project-form-header">Add a task to your project</h3>
                 <label for="new-task-name">Task Name:</label>
-                <input type="text" id="new-task-name" name="task-name">
+                <input type="text" id="new-task-name" name="task-name" required>
                 <label for="new-task-due-date">Due Date:</label>
-                <input type="date" id="new-task-due-date" name="task-due-date">
+                <input type="date" id="new-task-due-date" name="task-due-date" required>
                 <label for="new-task-status">Status:</label>
                 <select id="new-task-status" name="task-status">
                     <option value="not-started">Not Started</option>
@@ -60,6 +60,39 @@
                     <ul id="new-checklist-items"></ul>
                 </div>
                 <button id="add-new-task-form-button">Add New Task</button>
+            </form>
+        </aside>
+        <aside id="edit-task-form-wrapper" class="hidden">
+            <form id="edit-task-form">
+                <h3 id="active-project-form-header">Edit Task</h3>
+                <label for="edit-task-name">Task Name:</label>
+                <input type="text" id="edit-task-name" name="task-name" required>
+                <label for="edit-task-due-date">Due Date:</label>
+                <input type="date" id="edit-task-due-date" name="task-due-date" required>
+                <label for="edit-task-status">Status:</label>
+                <select id="edit-task-status" name="task-status">
+                    <option value="not-started">Not Started</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <label for="edit-task-priority">Priority:</label>
+                <select id="edit-task-priority" name="task-priority">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+                <label for="edit-task-description">Description:</label>
+                <input type="text" id="edit-task-description" name="task-description">
+                <label for="edit-task-notes">Notes:</label>
+                <input type="text" id="edit-task-notes" name="task-notes">
+                <label for="edit-task-checklist">Checklist:</label>
+                <div id="edit-task-checklist">
+                    <input type="text" id="edit-checklist-item" name="checklist-item" placeholder="Add checklist item">
+                    <button type="button" id="add-checklist-item">Add Item</button>
+                    <ul id="edit-checklist-items"></ul>
+                </div>
+                <button id="save-task-form-button">Save Changes</button>
+                <button id="cancel-task-form-button">Cancel</button>
             </form>
         </aside>
     </div>

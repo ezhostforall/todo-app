@@ -46,6 +46,11 @@ export default class UI {
             deleteProjectBtn.textContent = 'Delete';
             projectElement.appendChild(deleteProjectBtn);
 
+            const editProjectBtn = document.createElement('button');
+            editProjectBtn.className = 'edit-project-btn';
+            editProjectBtn.textContent = 'Edit';
+            projectElement.appendChild(editProjectBtn);
+
             projectList.appendChild(projectElement);
             
         })
@@ -140,22 +145,113 @@ export default class UI {
             taskCompleted.textContent = task.completed;
             taskElement.appendChild(taskCompleted);
 
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'task-button-container';
+            taskElement.appendChild(buttonContainer);
+
             const deleteTaskBtn = document.createElement('button');
             deleteTaskBtn.className = 'delete-task-btn';
             deleteTaskBtn.textContent = 'Delete';
             deleteTaskBtn.dataset.id = task.id;
-            taskElement.appendChild(deleteTaskBtn);
+            buttonContainer.appendChild(deleteTaskBtn);
+
+            const editTaskBtn = document.createElement('button');
+            editTaskBtn.className = 'edit-task-btn';
+            editTaskBtn.textContent = 'Edit';
+            editTaskBtn.dataset.id = task.id;
+            buttonContainer.appendChild(editTaskBtn);
+
 
             taskList.appendChild(taskElement);
         })
         
         UI.addDeleteTaskEvents(project);
         UI.addChecklistEvents(project);
+        UI.addEditTaskEvents(project);
 
     }
 
+    static displayEditTaskForm(task) {
+        const form = document.querySelector('#edit-task-form-wrapper');
+        form.classList.toggle('hidden');
+        console.log('Form visibility toggled.'); // Debugging log
+        console.log('Form visibility:', !form.classList.contains('hidden'));
+        
+        const taskTitle = document.querySelector('#edit-task-name');
+        const taskDescription = document.querySelector('#edit-task-description');
+        const taskDueDate = document.querySelector('#edit-task-due-date');
+        const taskPriority = document.querySelector('#edit-task-priority');
+        const taskStatus = document.querySelector('#edit-task-status');
+        const taskNotes = document.querySelector('#edit-task-notes');
+        const taskChecklist = document.querySelector('#edit-checklist-items');
+        
+        console.log('Displaying edit form for task:', task); // Debugging log
+    
+        taskTitle.value = task.title;
+        console.log('Task title:', taskTitle.value); // Debugging log
+        taskDescription.value = task.description;
+        console.log('Task description:', taskDescription.value); // Debugging log
 
-    //TODO: Fix event listener - when deleting a task after refreshing the page the button for deleting an individual task deletes all tasks. Beofre refreshing it works perfectly removing just the one task
+        // not filling the field with any date - returns date in dd/mm/yyyy correctly
+        taskDueDate.value = task.getFormattedDate();
+        console.log('Task due date:', taskDueDate.value); // Debugging log
+        taskPriority.value = task.priority;
+        console.log('Task priority:', taskPriority.value); // Debugging log
+        taskStatus.value = task.status;
+        console.log('Task status:', taskStatus.value); // Debugging log
+        taskNotes.value = task.notes.join('\n');
+        console.log('Task notes:', taskNotes.value); // Debugging log
+        
+        taskChecklist.innerHTML = '';
+        task.checklist.forEach(item => {
+            const checklistItem = document.createElement('li');
+            checklistItem.className = 'checklist-item';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = item.checked;
+            
+            const label = document.createElement('span');
+            label.textContent = item.title;
+            
+            checklistItem.appendChild(checkbox);
+            checklistItem.appendChild(label);
+            taskChecklist.appendChild(checklistItem);
+        });
+    
+        console.log('Edit form fields updated.'); // Debugging log
+    }
+
+    static addEditTaskEvents(project) {
+        const editTaskBtns = document.querySelectorAll('.edit-task-btn');
+        console.log(`Found ${editTaskBtns.length} edit task buttons.`); // Debugging log
+    
+        if (editTaskBtns.length === 0) {
+            console.log('No edit task buttons found.');
+            return;
+        }
+    
+        editTaskBtns.forEach(btn => {
+            console.log('Attaching event listener to edit task button.'); // Debugging log
+            btn.addEventListener('click', () => {
+                const taskId = btn.closest('.task-item').dataset.id;
+                console.log(`Edit button clicked for task ID: ${taskId}`); // Debugging log
+                const task = project.tasks.find(t => t.id === taskId);
+                if (task) {
+                    UI.displayEditTaskForm(task);
+                } else {
+                    console.log(`Task with ID ${taskId} not found.`);
+                }
+            });
+        });
+    }
+
+    // TODO: add event listeners to edit task form
+    // TODO: add edit project form and event listeners
+    // TODO: add close buttons to forms
+    // TODO: remove debugging logs
+
+    
     static addDeleteTaskEvents(project) {
         const deleteTaskBtns = document.querySelectorAll('.delete-task-btn');
         deleteTaskBtns.forEach(btn => {
@@ -179,33 +275,33 @@ export default class UI {
         const checklistCheckboxes = document.querySelectorAll('.task-checklist input[type="checkbox"]');
         checklistCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
-                // Find the task ID from the parent task element
+                
                 const taskElement = e.target.closest('.task-item');
                 const taskId = taskElement.dataset.id;
                 
-                // Find the checklist item index
+                
                 const checklistItem = e.target.closest('.checklist-item');
                 const checklistIndex = Array.from(checklistItem.parentElement.children).indexOf(checklistItem);
                 
-                // Get the task and update the checklist item's checked property
+                
                 const task = project.tasks.find(t => t.id === taskId);
                 if (task && task.checklist[checklistIndex]) {
                     task.checklist[checklistIndex].checked = e.target.checked;
                     
-                    // Load all projects
+                    
                     let projects = Storage.loadProjects();
                     
-                    // Find the index of the current project
+                    
                     const projectIndex = projects.findIndex(p => p._id === project._id);
                     
-                    // Update the project in the projects array
+                    
                     if (projectIndex !== -1) {
                         projects[projectIndex] = project;
                     } else {
                         projects.push(project);
                     }
                     
-                    // Save all projects
+                    
                     Storage.saveProjects(projects);
                 }
             });

@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 export default class Project {
     constructor(
         id = `project-${Date.now().toString()}`, 
-        name = `Default Project: ${Date.now().toString()}`, 
+        name = 'Default Project', 
         description = 'No description Provided', 
         tasks = []
     ) {
