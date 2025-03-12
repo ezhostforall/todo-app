@@ -12,16 +12,21 @@ export default class Storage {
             return [];
         }
         return projects.map(project => {
-            const tasks = project.tasks.map(task => new Task(
-                task.project,
-                task.title,
-                task.description,
-                new Date(task.dueDate),
-                task.priority,
-                task.status,
-                task.notes,
-                task.checklist  
-            ));
+            const tasks = project.tasks.map(task => {
+                const newTask = new Task(
+                    task.project,
+                    task.title,
+                    task.description,
+                    new Date(task.dueDate),
+                    task.priority,
+                    task.status,
+                    task.notes,
+                    task.checklist  
+                );
+                // Preserve the original task ID
+                newTask._id = task._id;
+                return newTask;
+            });
             return new Project(project._id, project.name, project.description, tasks);
         });
     }

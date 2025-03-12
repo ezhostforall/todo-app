@@ -148,28 +148,30 @@ export default class UI {
 
             taskList.appendChild(taskElement);
         })
-
+        
         UI.addDeleteTaskEvents(project);
         UI.addChecklistEvents(project);
 
     }
 
 
-    //TODO: Fix event listener - when deleting a task when there are multiple projects, the tasks for all projects are deleted
+    //TODO: Fix event listener - when deleting a task after refreshing the page the button for deleting an individual task deletes all tasks. Beofre refreshing it works perfectly removing just the one task
     static addDeleteTaskEvents(project) {
-        const taskList = document.querySelector('#task-list');
-        taskList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('delete-task-btn')) {
-                const taskId = e.target.dataset.id;
+        const deleteTaskBtns = document.querySelectorAll('.delete-task-btn');
+        deleteTaskBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const taskId = btn.dataset.id;
                 project.removeTask(taskId);
                 let projects = Storage.loadProjects();
+
                 const projectIndex = projects.findIndex(p => p._id === project._id);
                 if (projectIndex !== -1) {
                     projects[projectIndex] = project;
                 }
                 Storage.saveProjects(projects);
                 UI.displayTasks(project);
-            }
+                
+            })
         });
     }
 
